@@ -1,12 +1,21 @@
 import React from 'react';
-import './styles.css';
+import PropTypes from 'prop-types';
+import styles from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ image, onClick }) => {
-  return (
-    <li className="gallery-item" onClick={onClick}>
-      <img src={image.webformatURL} alt={image.id} />
-    </li>
-  );
+const ImageGalleryItem = ({ image, onImageClick }) => (
+  <li className={styles.ImageGalleryItem}>
+    <img
+      src={image.webformatURL}
+      alt={image.tags}
+      className={styles.ImageGalleryItemImage}
+      onClick={() => onImageClick(image)}
+    />
+  </li>
+);
+
+ImageGalleryItem.propTypes = {
+  image: PropTypes.object.isRequired,
+  onImageClick: PropTypes.func.isRequired,
 };
 
 export default ImageGalleryItem;

@@ -1,27 +1,30 @@
 import React, { useState } from 'react';
-import './styles.css';
+import PropTypes from 'prop-types';
+import styles from './Searchbar.module.css';
 
 const Searchbar = ({ onSubmit }) => {
   const [query, setQuery] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(query); 
+  const handleChange = (event) => {
+    setQuery(event.target.value);
   };
 
-  const handleChange = (e) => {
-    setQuery(e.target.value);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSubmit(query);
   };
 
   return (
-    <header className="searchbar">
-      <form className="form" onSubmit={handleSubmit}>
-        <button type="submit" className="button">
-          <span className="button-label">Search</span>
+    <header className={styles.Searchbar}>
+      <form className={styles.SearchForm} onSubmit={handleSubmit}>
+        <button type="submit" className={styles.SearchFormButton}>
+          <span role="img" aria-label="Search" className={styles.SearchFormButtonLabel}>
+            🔍
+          </span>
         </button>
 
         <input
-          className="input"
+          className={styles.SearchFormInput}
           type="text"
           autoComplete="off"
           autoFocus
@@ -32,6 +35,10 @@ const Searchbar = ({ onSubmit }) => {
       </form>
     </header>
   );
+};
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 };
 
 export default Searchbar;

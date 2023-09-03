@@ -5,9 +5,7 @@ import Loader from './Loader';
 import Button from './Button';
 import Modal from './Modal';
 
-import './styles.css';
-
-
+import styles from './App.module.css'; 
 
 const API_KEY = '35924143-9020fc77f3274be39114409f4';
 const API_URL = 'https://pixabay.com/api/';
@@ -65,16 +63,14 @@ const App = () => {
   }, [query, page]);
 
   return (
-    <div className="app">
+    <div className={styles.App}>
       <Searchbar onSubmit={handleSearch} />
       <ImageGallery images={images} onImageClick={openModal} />
       {loading && <Loader />}
       {images.length > 0 && !loading && (
         <Button onClick={loadMoreImages}>Load More</Button>
       )}
-      {selectedImage && (
-        <Modal image={selectedImage} onClose={closeModal} />
-      )}
+      {selectedImage && <Modal image={selectedImage} onClose={closeModal} />}
     </div>
   );
 };

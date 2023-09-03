@@ -1,17 +1,16 @@
 import React from 'react';
-import './styles.css';
+import PropTypes from 'prop-types';
+import styles from './Button.module.css';
 
-const Button = ({ onClick, disabled }) => {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className="load-more-button"
-    >
-      Load More
-    </button>
-  );
+const Button = ({ onClick, children }) => (
+  <button type="button" className={styles.Button} onClick={onClick}>
+    {children}
+  </button>
+);
+
+Button.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default Button;
