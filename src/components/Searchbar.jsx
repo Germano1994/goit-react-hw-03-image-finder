@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
+import './styles.css';
 
 const Searchbar = ({ onSubmit }) => {
   const [query, setQuery] = useState('');
 
-  const handleChange = (e) => {
-    setQuery(e.target.value);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(query);
-    setQuery(''); 
+    onSubmit(query); 
+  };
+
+  const handleChange = (e) => {
+    setQuery(e.target.value);
   };
 
   return (
