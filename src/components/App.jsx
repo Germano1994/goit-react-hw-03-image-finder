@@ -18,7 +18,7 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const fetchImages = () => {
+  const fetchImages = (query, page) => {
     if (!query) return;
 
     setLoading(true);
@@ -59,7 +59,7 @@ const App = () => {
     if (page === 1) {
       setImages([]);
     }
-    fetchImages();
+    fetchImages(query, page);
   }, [query, page]);
 
   return (
