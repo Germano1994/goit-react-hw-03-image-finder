@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './ImageGalleryItem.module.css';
+import styles from './ImageGallery.module.css';
 
 const ImageGalleryItem = ({ image, onImageClick }) => (
   <li className={styles.ImageGalleryItem}>
