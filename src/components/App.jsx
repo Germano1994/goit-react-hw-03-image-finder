@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
 import Loader from './Loader';
@@ -11,77 +11,92 @@ const API_KEY = '35924143-9020fc77f3274be39114409f4';
 const API_URL = 'https://pixabay.com/api/';
 const PER_PAGE = 12;
 
-const App = () => {
-  const [query, setQuery] = useState('');
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [isLastPage, setIsLastPage] = useState(false);
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      query: '',
+      images: [],
+      loading: false,
+      page: 1,
+      selectedImage: null,
+      isLastPage: false,
+    };
+  }
 
-  const fetchImages = (query, page) => {
+  fetchImages = (query, page) => {
     if (!query) return;
 
-    setLoading(true);
+    this.setState({ loading: true });
 
     fetch(
       `${API_URL}?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${PER_PAGE}`
     )
       .then((response) => response.json())
       .then((data) => {
-        setImages((prevImages) => [...prevImages, ...data.hits]);
-        setLoading(false);
-
-        
-        if (data.hits.length < PER_PAGE) {
-          setIsLastPage(true);
-        } else {
-          setIsLastPage(false);
-        }
+        this.setState((prevState) => ({
+          images: [...prevState.images, ...data.hits],
+          loading: false,
+          isLastPage: data.hits.length < PER_PAGE,
+        }));
       })
       .catch((error) => {
         console.error('Error fetching images:', error);
-        setLoading(false);
+        this.setState({ loading: false });
       });
   };
 
-  const handleSearch = (newQuery) => {
-    setQuery(newQuery);
-    setImages([]);
-    setPage(1);
-    setIsLastPage(false); 
+  handleSearch = (newQuery) => {
+    this.setState({
+      query: newQuery,
+      images: [],
+      page: 1,
+      isLastPage: false,
+    });
   };
 
-  const loadMoreImages = () => {
-    setPage((prevPage) => prevPage + 1);
+  loadMoreImages = () => {
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
+    }));
   };
 
-  const openModal = (image) => {
-    setSelectedImage(image);
+  openModal = (image) => {
+    this.setState({ selectedImage: image });
   };
 
-  const closeModal = () => {
-    setSelectedImage(null);
+  closeModal = () => {
+    this.setState({ selectedImage: null });
   };
 
-  useEffect(() => {
-    if (page === 1) {
-      setImages([]);
+  componentDidMount() {
+    this.fetchImages(this.state.query, this.state.page);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.page !== this.state.page || prevState.query !== this.state.query) {
+      if (this.state.page === 1) {
+        this.setState({ images: [] });
+      }
+      this.fetchImages(this.state.query, this.state.page);
     }
-    fetchImages(query, page);
-  }, [query, page]);
+  }
 
-  return (
-    <div className={styles.App}>
-      <Searchbar onSubmit={handleSearch} />
-      <ImageGallery images={images} onImageClick={openModal} />
-      {loading && <Loader />}
-      {images.length > 0 && !loading && !isLastPage && (
-        <Button onClick={loadMoreImages}>Load More</Button>
-      )}
-      {selectedImage && <Modal image={selectedImage} onClose={closeModal} />}
-    </div>
-  );
-};
+  render() {
+    const { images, loading, selectedImage, isLastPage } = this.state;
+
+    return (
+      <div className={styles.App}>
+        <Searchbar onSubmit={this.handleSearch} />
+        <ImageGallery images={images} onImageClick={this.openModal} />
+        {loading && <Loader />}
+        {images.length > 0 && !loading && !isLastPage && (
+          <Button onClick={this.loadMoreImages}>Load More</Button>
+        )}
+        {selectedImage && <Modal image={selectedImage} onClose={this.closeModal} />}
+      </div>
+    );
+  }
+}
 
 export default App;
